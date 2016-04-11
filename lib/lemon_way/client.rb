@@ -52,7 +52,7 @@ module LemonWay
 
     private
 
-    def self.send_request(method_name, version, params, opts={})
+    def self.send_request(method_name, version, params, opts={}, &block)
       @@auth.merge({
         version: version
       }).merge(params).merge(opts)
@@ -69,7 +69,11 @@ module LemonWay
       when Net::HTTPSuccess then
         res = JSON.parse(res.body)['d']
         unless (res['E'])
-          return {success: true, data: res}
+          if block_given?
+            return block.call(res)
+          else
+            return {success: true, data: res}
+          end
         else
           return {success: false, code: res['E']['Code'], msg: res['E']['Msg'] }
         end
