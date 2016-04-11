@@ -50,13 +50,9 @@ module LemonWay
       }
     end
 
-    # private
+    private
 
     def self.send_request(method_name, version, params, opts={})
-      puts '-----------'
-      p @@auth
-      puts '-----------'
-
       @@auth.merge({
         version: version
       }).merge(params).merge(opts)
@@ -84,7 +80,7 @@ module LemonWay
           404 => 'Check that the access URLs are correct. If yes, please contact support@lemonway.fr',
           500 => 'Lemon Way internal server error, please contact support@lemonway.fr'
         }
-        return {success: false, code: res.code, msg: code2msg[res.code] }
+        return {success: false, code: res.code, msg: code2msg[res.code.to_i] }
       end
     end
 
