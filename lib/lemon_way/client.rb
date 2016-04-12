@@ -42,11 +42,11 @@ module LemonWay
     def initialize(opts = {})
       @@uri = URI.parse opts.delete(:uri)
       @@auth = {
-        wlLogin: opts.delete(:wl_login),
-        wlPass: opts.delete(:wl_pass),
+        wlLogin: opts.delete(:wlLogin),
+        wlPass: opts.delete(:wlPass),
         language: opts.delete(:language),
-        walletIp: opts.delete(:ip) || (`curl ifconfig.co`).sub(/\n/, ''), 
-        walletUa:  opts.delete(:user_agent) || ''
+        walletIp: opts.delete(:walletIp) || '', 
+        walletUa:  opts.delete(:walletUa) || ''
       }
     end
 
@@ -60,6 +60,8 @@ module LemonWay
       uri = URI.parse("#{@@uri}/#{method_name}")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
+
+      p params
 
       req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' => 'application/json', 'charset' => 'utf-8'})
       req.body = params.to_json
@@ -79,12 +81,12 @@ module LemonWay
         end
       else
         code2msg = {
-          400 => 'Bad Request : The server cannot or will not process the request due to something that is perceived to be a client error',
-          403 => 'IP is not allowed to access Lemon Way\'s API, please contact support@lemonway.fr',
-          404 => 'Check that the access URLs are correct. If yes, please contact support@lemonway.fr',
-          500 => 'Lemon Way internal server error, please contact support@lemonway.fr'
+          '400' => 'Bad Request : The server cannot or will not process the request due to something that is perceived to be a client error',
+          '403' => 'IP is not allowed to access Lemon Way\'s API, please contact support@lemonway.fr',
+          '404' => 'Check that the access URLs are correct. If yes, please contact support@lemonway.fr',
+          '500' => 'Lemon Way internal server error, please contact support@lemonway.fr'
         }
-        return {success: false, code: res.code, msg: code2msg[res.code.to_i] }
+        return {success: false, code: res.code, msg: code2msg[res.code] || 'Unknown error' }
       end
     end
 
