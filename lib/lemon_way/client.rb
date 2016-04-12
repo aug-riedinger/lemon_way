@@ -35,16 +35,14 @@ module LemonWay
 
     @@api_method_calls.each do |action|
       define_method(action.underscore.to_sym) do |*args,  &block|
-        self.class.send_request(@uri, @auth, action, *args, &block)
+        self.class.send_request(action, *args, &block)
       end
     end
 
     def initialize(opts = {})
-      @uri = URI.parse(opts.delete(:uri))
+      @@uri = URI.parse(opts.delete(:uri))
 
-      p opts
-
-      @auth = {
+      @@auth = {
         wlLogin: opts.delete(:wlLogin),
         wlPass: opts.delete(:wlPass),
         language: opts.delete(:language),
@@ -52,25 +50,19 @@ module LemonWay
         walletUa:  opts.delete(:walletUa) || ''
       }
 
-      p auth
     end
 
     private
 
-    def self.send_request(uri, auth, method_name, version, params, opts={}, &block)
+    def self.send_request(method_name, version, params, opts={}, &block)
 
-      p auth
-
-      auth.merge({
+      params = @@auth.merge({
         version: version
       }).merge(params).merge(opts)
 
       uri = URI.parse("#{uri}/#{method_name}")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
-
-      p params
-
       req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' => 'application/json', 'charset' => 'utf-8'})
       req.body = params.to_json
       res = http.request(req)
