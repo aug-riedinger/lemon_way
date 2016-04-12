@@ -35,13 +35,13 @@ module LemonWay
 
     @@api_method_calls.each do |action|
       define_method(action.underscore.to_sym) do |*args,  &block|
-        self.class.send_request(action, *args, &block)
+        self.class.send_request(@uri, @auth, action, *args, &block)
       end
     end
 
     def initialize(opts = {})
-      @@uri = URI.parse opts.delete(:uri)
-      @@auth = {
+      @uri = URI.parse opts.delete(:uri)
+      @auth = {
         wlLogin: opts.delete(:wlLogin),
         wlPass: opts.delete(:wlPass),
         language: opts.delete(:language),
@@ -52,12 +52,12 @@ module LemonWay
 
     private
 
-    def self.send_request(method_name, version, params, opts={}, &block)
-      @@auth.merge({
+    def self.send_request(uri, auth, method_name, version, params, opts={}, &block)
+      auth.merge({
         version: version
       }).merge(params).merge(opts)
 
-      uri = URI.parse("#{@@uri}/#{method_name}")
+      uri = URI.parse("#{uri}/#{method_name}")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
 
