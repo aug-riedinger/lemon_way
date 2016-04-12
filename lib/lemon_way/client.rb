@@ -66,20 +66,18 @@ module LemonWay
       req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' => 'application/json', 'charset' => 'utf-8'})
       req.body = params.to_json
       res = http.request(req)
-
-      p res
+      json = JSON.parse(res.body)
 
       case res
       when Net::HTTPSuccess then
-        res = JSON.parse(res.body)['d']
-        unless (res['E'])
+        unless (json['d']['E'])
           if block_given?
-            return block.call(res)
+            return block.call(json['d'])
           else
-            return {success: true, data: res}
+            return {success: true, data: json['d']}
           end
         else
-          return {success: false, code: res['E']['Code'], msg: res['E']['Msg'] }
+          return {success: false, code: json['d']['E']['Code'], msg: json['d']['E']['Msg'] }
         end
       else
         code2msg = {
@@ -88,7 +86,7 @@ module LemonWay
           '404' => 'Check that the access URLs are correct. If yes, please contact support@lemonway.fr',
           '500' => 'Lemon Way internal server error, please contact support@lemonway.fr'
         }
-        return {success: false, code: res.code, msg: code2msg[res.code] || 'Unknown error' }
+        return {success: false, code: res.code, msg: json['Message'] || code2msg[res.code] || 'Unknown error' }
       end
     end
 
