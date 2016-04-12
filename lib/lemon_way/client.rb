@@ -40,7 +40,10 @@ module LemonWay
     end
 
     def initialize(opts = {})
-      @uri = URI.parse opts.delete(:uri)
+      @uri = URI.parse(opts.delete(:uri))
+
+      p opts
+
       @auth = {
         wlLogin: opts.delete(:wlLogin),
         wlPass: opts.delete(:wlPass),
@@ -48,11 +51,16 @@ module LemonWay
         walletIp: opts.delete(:walletIp) || '', 
         walletUa:  opts.delete(:walletUa) || ''
       }
+
+      p auth
     end
 
     private
 
     def self.send_request(uri, auth, method_name, version, params, opts={}, &block)
+
+      p auth
+
       auth.merge({
         version: version
       }).merge(params).merge(opts)
