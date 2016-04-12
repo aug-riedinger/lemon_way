@@ -67,6 +67,8 @@ module LemonWay
       req.body = params.to_json
       res = http.request(req)
 
+      p res
+
       case res
       when Net::HTTPSuccess then
         res = JSON.parse(res.body)['d']
