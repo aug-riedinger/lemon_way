@@ -35,14 +35,14 @@ module LemonWay
 
     @@api_method_calls.each do |action|
       define_method(action.underscore.to_sym) do |*args,  &block|
-        self.class.send_request(action, *args, &block)
+        self.class.send_request(@uri, @auth, action, *args, &block)
       end
     end
 
     def initialize(opts = {})
-      @@uri = URI.parse(opts.delete(:uri))
+      @uri = URI.parse(opts.delete(:uri))
 
-      @@auth = {
+      @auth = {
         wlLogin: opts.delete(:wlLogin),
         wlPass: opts.delete(:wlPass),
         language: opts.delete(:language),
@@ -54,9 +54,9 @@ module LemonWay
 
     private
 
-    def self.send_request(method_name, version, params, opts={}, &block)
+    def self.send_request(uri, auth, method_name, version, params, opts={}, &block)
 
-      params = @@auth.merge({
+      params = auth.merge({
         version: version
       }).merge(params).merge(opts)
 
