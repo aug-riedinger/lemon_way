@@ -70,12 +70,12 @@ module LemonWay
       req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' => 'application/json; charset=utf-8'})
       req.body = params.to_json
 
-      p req
+      puts req.inspect
 
       res = http.request(req)
       json = JSON.parse(res.body)
 
-      p res
+      puts res.inspect
 
       case res
       when Net::HTTPSuccess then
