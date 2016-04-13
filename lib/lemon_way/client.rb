@@ -61,7 +61,7 @@ module LemonWay
 
       if options[:debug]
         puts '--- SENT ---'
-        y params
+        puts params.to_yaml
         puts '------------'
       end
 
@@ -75,7 +75,7 @@ module LemonWay
 
       if options[:debug]
         puts '--- RECEIVED ---'
-        y json
+        puts json.to_yaml
         puts '----------------'
       end
 
