@@ -67,6 +67,9 @@ module LemonWay
       uri = URI.parse("#{uri}/#{method_name}")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
+
+      http.set_debug_output($stdout)
+
       req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' => 'application/json; charset=utf-8'})
       req.body = params.to_json
 
