@@ -69,8 +69,13 @@ module LemonWay
       http.use_ssl = true
       req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' => 'application/json; charset=utf-8'})
       req.body = params.to_json
+
+      p req
+
       res = http.request(req)
       json = JSON.parse(res.body)
+
+      p res
 
       case res
       when Net::HTTPSuccess then
