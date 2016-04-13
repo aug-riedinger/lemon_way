@@ -60,6 +60,10 @@ module LemonWay
         version: version
       }).merge(params).merge(opts)
 
+      puts '------'
+      y params
+      puts '------'
+
       uri = URI.parse("#{uri}/#{method_name}")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
