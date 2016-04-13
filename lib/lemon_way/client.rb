@@ -34,8 +34,10 @@ module LemonWay
     )
 
     @@api_method_calls.each do |action|
-      define_method(action.underscore.to_sym) do |*args,  &block|
-        self.class.send_request(@uri, @auth, action, *args, &block)
+      define_method(action.underscore.to_sym) do |version, params, &block|
+        uri = URI.parse("#{@uri}/#{action}")
+        params = @auth.merge({version: version}).merge(params)
+        self.class.send_request(uri, params, &block)
       end
     end
 
@@ -54,17 +56,12 @@ module LemonWay
 
     private
 
-    def self.send_request(uri, auth, method_name, version, params, opts={}, &block)
+    def self.send_request(uri, params, &block)
 
-      params = auth.merge({
-        version: version
-      }).merge(params).merge(opts)
-
-      puts '------'
+      puts '--- SENT ---'
       y params
-      puts '------'
+      puts '------------'
 
-      uri = URI.parse("#{uri}/#{method_name}")
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
 
@@ -72,13 +69,12 @@ module LemonWay
 
       req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' => 'application/json; charset=utf-8'})
       req.body = params.to_json
-
-      puts req.inspect
-
       res = http.request(req)
       json = JSON.parse(res.body)
 
-      puts res.inspect
+      puts '--- RECEIVED ---'
+      y json
+      puts '----------------'
 
       case res
       when Net::HTTPSuccess then
@@ -102,7 +98,7 @@ module LemonWay
       end
     end
 
-    class Error < Exception; end
+    # class Error < Exception; end
   end
 
 end
