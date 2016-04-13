@@ -37,7 +37,7 @@ module LemonWay
       define_method(action.underscore.to_sym) do |version, params, &block|
         uri = URI.parse("#{@uri}/#{action}")
         params = @auth.merge({version: version}).merge(params)
-        self.class.send_request(uri, params, &block)
+        self.class.send_request(uri, params, {debug: @debug}, &block)
       end
     end
 
@@ -52,29 +52,32 @@ module LemonWay
         walletUa:  opts.delete(:walletUa) || ''
       }
 
+      @debug = opts.delete(:debug)
     end
 
     private
 
-    def self.send_request(uri, params, &block)
+    def self.send_request(uri, params, options={}, &block)
 
-      puts '--- SENT ---'
-      y params
-      puts '------------'
+      if options[:debug]
+        puts '--- SENT ---'
+        y params
+        puts '------------'
+      end
 
       http = Net::HTTP.new(uri.host, uri.port)
       http.use_ssl = true
-
-      http.set_debug_output($stdout)
 
       req = Net::HTTP::Post.new(uri.path, initheader = {'Content-Type' => 'application/json; charset=utf-8'})
       req.body = params.to_json
       res = http.request(req)
       json = JSON.parse(res.body)
 
-      puts '--- RECEIVED ---'
-      y json
-      puts '----------------'
+      if options[:debug]
+        puts '--- RECEIVED ---'
+        y json
+        puts '----------------'
+      end
 
       case res
       when Net::HTTPSuccess then
