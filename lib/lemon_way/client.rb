@@ -60,6 +60,8 @@ module LemonWay
       if @prefix
         params[:clientMail] = "#{@prefix}-#{params[:clientMail]}"
         params[:wallet] = "#{@prefix}-#{params[:wallet]}"
+        params[:debitWallet] = "#{@prefix}-#{params[:debitWallet]}"
+        params[:creditWallet] = "#{@prefix}-#{params[:creditWallet]}"
       end
       return params
     end
