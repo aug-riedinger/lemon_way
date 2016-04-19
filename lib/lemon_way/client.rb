@@ -36,7 +36,7 @@ module LemonWay
     @@api_method_calls.each do |action|
       define_method(action.underscore.to_sym) do |version, params, &block|
         uri = URI.parse("#{@uri}/#{action}")
-        params = @auth.merge({version: version}).merge(params)
+        params = prefix_email_and_wallet_id(@auth.merge({version: version}).merge(params))
         self.class.send_request(uri, params, {debug: @debug}, &block)
       end
     end
@@ -53,6 +53,15 @@ module LemonWay
       }
 
       @debug = opts.delete(:debug)
+      @prefix = opts.delete(:prefix)
+    end
+
+    def prefix_email_and_wallet_id(params)
+      if @prefix
+        params[:clientMail] = "#{@prefix}-#{params[:clientMail]}"
+        params[:wallet] = "#{@prefix}-#{params[:wallet]}"
+      end
+      return params
     end
 
     private
