@@ -96,10 +96,10 @@ module LemonWay
           if block_given?
             return block.call(json['d'])
           else
-            return {success: true, data: json['d']}
+            return [json['d'], nil]
           end
         else
-          return {success: false, code: json['d']['E']['Code'], msg: json['d']['E']['Msg'] }
+          return [nil, {code: json['d']['E']['Code'], msg: json['d']['E']['Msg'] }]
         end
       else
         code2msg = {
@@ -108,7 +108,7 @@ module LemonWay
           '404' => 'Check that the access URLs are correct. If yes, please contact support@lemonway.fr',
           '500' => 'Lemon Way internal server error, please contact support@lemonway.fr'
         }
-        return {success: false, code: res.code, msg: json['Message'] || code2msg[res.code] || 'Unknown error' }
+        return [nil, {code: res.code, msg: json['Message'] || code2msg[res.code] || 'Unknown error' }]
       end
     end
 
