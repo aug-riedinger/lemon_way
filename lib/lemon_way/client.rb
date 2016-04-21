@@ -72,6 +72,7 @@ module LemonWay
 
       if options[:debug]
         puts '--- SENT ---'
+        puts "To: #{uri.to_s}"
         puts params.to_yaml
         puts '------------'
       end
