@@ -6,10 +6,10 @@ require 'lemon_way/version'
 Gem::Specification.new do |spec|
   spec.name          = "lemon_way"
   spec.version       = LemonWay::VERSION
-  spec.authors       = ["Itkin"]
+  spec.authors       = ["Augustin Riedinger"]
   spec.email         = ["augustin.riedinger@gmail.com"]
-  spec.description   = "Describe me"
-  spec.summary       = "Describe me"
+  spec.description   = "Ruby SDK client to query LemonWay DirectKit API"
+  spec.summary       = "Ruby SDK client to query LemonWay DirectKit API"
   spec.homepage      = ""
   spec.license       = "MIT"
 
